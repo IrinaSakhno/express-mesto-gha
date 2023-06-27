@@ -13,13 +13,13 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  User.findById(req.params.id)
+  User.findById(req.params.userId)
     .orFail(() => new Error('Not found'))
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.message === 'Not found') {
         res
-          .status(404)
+          .status(400)
           .send({
             message: 'User not found',
           });
@@ -52,7 +52,7 @@ const updateProfile = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    { new: true },
+    { new: true, runValidators: true },
   )
     .then((updateData) => {
       res.send(updateData);
@@ -71,7 +71,7 @@ const updateAvatar = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
-    { new: true },
+    { new: true, runValidators: true },
   )
     .then((updateData) => {
       res.send(updateData);

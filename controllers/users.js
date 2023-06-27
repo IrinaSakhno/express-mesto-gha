@@ -6,7 +6,7 @@ const getUsers = (req, res) => {
     .catch((err) => res
       .status(500)
       .send({
-        message: 'Internal Server Error',
+        message: 'Could not get users',
         err: err.message,
         stack: err.stack,
       }));
@@ -27,7 +27,7 @@ const getUserById = (req, res) => {
         res
           .status(400)
           .send({
-            message: 'Internal Server Error',
+            message: 'Could not get user',
             err: err.message,
             stack: err.stack,
           });
@@ -60,7 +60,7 @@ const updateProfile = (req, res) => {
     .catch((err) => res
       .status(400)
       .send({
-        message: 'Internal Server Error',
+        message: 'Could not update profile',
         err: err.message,
         stack: err.stack,
       }));
@@ -79,7 +79,7 @@ const updateAvatar = (req, res) => {
     .catch((err) => res
       .status(400)
       .send({
-        message: 'Internal Server Error',
+        message: 'Could not update avatar',
         err: err.message,
         stack: err.stack,
       }));

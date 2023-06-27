@@ -4,7 +4,7 @@ const getCards = (req, res) => {
   Card.find({})
     .then((card) => res.status(200).send(card))
     .catch((err) => res.status(500).send({
-      message: 'Internal Server Error',
+      message: 'Could not get cards',
       err: err.message,
       stack: err.stack,
     }));
@@ -21,7 +21,7 @@ const createCard = (req, res) => {
         res.status(400).send({ message: "Card's data is incorrect" });
       } else {
         res.status(500).send({
-          message: 'Internal Server Error',
+          message: 'Could not create card',
           err: err.message,
           stack: err.stack,
         });
@@ -34,11 +34,23 @@ const deleteCard = (req, res) => {
     .then(() => {
       res.send({ message: 'Card was successfully deleted' });
     })
-    .catch((err) => res.status(400).send({
-      message: 'Card not deleted',
-      err: err.message,
-      stack: err.stack,
-    }));
+    .catch((err) => {
+      if (err.message === 'Not found') {
+        res
+          .status(404)
+          .send({
+            message: 'Card not found',
+          });
+      } else {
+        res
+          .status(400)
+          .send({
+            message: 'Could not delete card',
+            err: err.message,
+            stack: err.stack,
+          });
+      }
+    });
 };
 
 const likeCard = (req, res) => {
@@ -50,11 +62,23 @@ const likeCard = (req, res) => {
     .then(() => {
       res.send({ message: 'I like it!' });
     })
-    .catch((err) => res.status(400).send({
-      message: 'Internal Server Error',
-      err: err.message,
-      stack: err.stack,
-    }));
+    .catch((err) => {
+      if (err.message === 'Not found') {
+        res
+          .status(404)
+          .send({
+            message: 'Card not found',
+          });
+      } else {
+        res
+          .status(400)
+          .send({
+            message: 'Could not put like',
+            err: err.message,
+            stack: err.stack,
+          });
+      }
+    });
 };
 
 const dislikeCard = (req, res) => {
@@ -66,11 +90,23 @@ const dislikeCard = (req, res) => {
     .then(() => {
       res.send({ message: 'Like was successfully removed' });
     })
-    .catch((err) => res.status(400).send({
-      message: 'Could not remove like',
-      err: err.message,
-      stack: err.stack,
-    }));
+    .catch((err) => {
+      if (err.message === 'Not found') {
+        res
+          .status(404)
+          .send({
+            message: 'Card not found',
+          });
+      } else {
+        res
+          .status(400)
+          .send({
+            message: 'Could not remove like',
+            err: err.message,
+            stack: err.stack,
+          });
+      }
+    });
 };
 
 module.exports = {

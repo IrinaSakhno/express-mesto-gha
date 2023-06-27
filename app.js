@@ -21,6 +21,12 @@ app.use((req, res, next) => {
   next();
 });
 
+app.patch('*', (req, res) => {
+  res.status(404).send({
+    message: 'This page does not exist',
+  });
+});
+
 app.use(router);
 
 app.listen(PORT, () => {

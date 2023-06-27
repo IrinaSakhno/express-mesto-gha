@@ -39,9 +39,9 @@ const createUser = (req, res) => {
   User.create(req.body)
     .then((user) => res.status(201).send(user))
     .catch((err) => res
-      .status(500)
+      .status(400)
       .send({
-        message: 'Internal Server Error',
+        message: 'User data is incorrect',
         err: err.message,
         stack: err.stack,
       }));

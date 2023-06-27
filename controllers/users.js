@@ -19,13 +19,13 @@ const getUserById = (req, res) => {
     .catch((err) => {
       if (err.message === 'Not found') {
         res
-          .status(400)
+          .status(404)
           .send({
             message: 'User not found',
           });
       } else {
         res
-          .status(500)
+          .status(400)
           .send({
             message: 'Internal Server Error',
             err: err.message,
@@ -58,7 +58,7 @@ const updateProfile = (req, res) => {
       res.send(updateData);
     })
     .catch((err) => res
-      .status(500)
+      .status(400)
       .send({
         message: 'Internal Server Error',
         err: err.message,
@@ -77,7 +77,7 @@ const updateAvatar = (req, res) => {
       res.send(updateData);
     })
     .catch((err) => res
-      .status(500)
+      .status(400)
       .send({
         message: 'Internal Server Error',
         err: err.message,

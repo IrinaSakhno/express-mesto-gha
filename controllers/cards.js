@@ -50,7 +50,7 @@ const likeCard = (req, res) => {
     .then(() => {
       res.send({ message: 'I like it!' });
     })
-    .catch((err) => res.status(500).send({
+    .catch((err) => res.status(400).send({
       message: 'Internal Server Error',
       err: err.message,
       stack: err.stack,
@@ -66,7 +66,7 @@ const dislikeCard = (req, res) => {
     .then(() => {
       res.send({ message: 'Like was successfully removed' });
     })
-    .catch((err) => res.status(404).send({
+    .catch((err) => res.status(400).send({
       message: 'Could not remove like',
       err: err.message,
       stack: err.stack,

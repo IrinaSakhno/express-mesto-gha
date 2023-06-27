@@ -34,8 +34,8 @@ const deleteCard = (req, res) => {
     .then(() => {
       res.send({ message: 'Card was successfully deleted' });
     })
-    .catch((err) => res.status(500).send({
-      message: 'Internal Server Error',
+    .catch((err) => res.status(400).send({
+      message: 'Card not deleted',
       err: err.message,
       stack: err.stack,
     }));
@@ -44,7 +44,7 @@ const deleteCard = (req, res) => {
 const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .then(() => {
@@ -60,14 +60,14 @@ const likeCard = (req, res) => {
 const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { $pull: { likes: req.user._id } },
     { new: true },
   )
     .then(() => {
       res.send({ message: 'Like was successfully removed' });
     })
-    .catch((err) => res.status(500).send({
-      message: 'Internal Server Error',
+    .catch((err) => res.status(404).send({
+      message: 'Could not remove like',
       err: err.message,
       stack: err.stack,
     }));

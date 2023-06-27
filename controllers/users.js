@@ -55,7 +55,7 @@ const updateProfile = (req, res) => {
     { new: true, runValidators: true },
   )
     .then((updateData) => {
-      res.send(updateData);
+      res.status(200).send(updateData);
     })
     .catch((err) => res
       .status(400)
@@ -74,7 +74,7 @@ const updateAvatar = (req, res) => {
     { new: true, runValidators: true },
   )
     .then((updateData) => {
-      res.send(updateData);
+      res.status(200).send(updateData);
     })
     .catch((err) => res
       .status(400)

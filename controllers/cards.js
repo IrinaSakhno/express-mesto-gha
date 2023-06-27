@@ -31,6 +31,7 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(() => new Error('Not found'))
     .then(() => {
       res.send({ message: 'Card was successfully deleted' });
     })

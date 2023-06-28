@@ -16,7 +16,7 @@ const getUserById = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({
+        res.status(400).send({
           message: 'User not found',
         });
       } else {

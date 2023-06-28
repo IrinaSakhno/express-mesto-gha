@@ -16,8 +16,12 @@ const getUserById = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({
+        res.status(404).send({
           message: 'User not found',
+        });
+      } if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Wrong ID format',
         });
       } else {
         res.status(500).send({

@@ -17,7 +17,7 @@ const createCard = (req, res) => {
   })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err.message.includes('validation failed')) {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: "Card's data is incorrect" });
       } else {
         res.status(500).send({
@@ -36,20 +36,14 @@ const deleteCard = (req, res) => {
       res.send({ message: 'Card was successfully deleted' });
     })
     .catch((err) => {
-      if (err.message === 'Not found') {
-        res
-          .status(404)
-          .send({
-            message: 'Card not found',
-          });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Card not found' });
       } else {
-        res
-          .status(400)
-          .send({
-            message: 'Could not delete card',
-            err: err.message,
-            stack: err.stack,
-          });
+        res.status(500).send({
+          message: 'Could not create card',
+          err: err.message,
+          stack: err.stack,
+        });
       }
     });
 };

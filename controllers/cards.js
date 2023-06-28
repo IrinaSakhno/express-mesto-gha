@@ -36,11 +36,13 @@ const deleteCard = (req, res) => {
       res.send({ message: 'Card was successfully deleted' });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'Not found') {
         res.status(404).send({ message: 'Card not found' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Wrong ID format' });
       } else {
         res.status(500).send({
-          message: 'Could not create card',
+          message: 'Could not delete card',
           err: err.message,
           stack: err.stack,
         });

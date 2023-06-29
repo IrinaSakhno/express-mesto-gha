@@ -69,7 +69,7 @@ const likeCard = (req, res) => {
           });
       } else {
         res
-          .status(400)
+          .status(500)
           .send({
             message: 'Could not put like',
             err: err.message,
@@ -98,7 +98,7 @@ const dislikeCard = (req, res) => {
           });
       } else {
         res
-          .status(400)
+          .status(500)
           .send({
             message: 'Could not remove like',
             err: err.message,

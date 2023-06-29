@@ -44,7 +44,7 @@ const createUser = (req, res) => {
           stack: err.stack,
         });
       } else {
-        res.status(400).send({
+        res.status(500).send({
           message: 'Could not create user',
           err: err.message,
           stack: err.stack,
@@ -71,7 +71,7 @@ const updateProfile = (req, res) => {
           stack: err.stack,
         });
       } else {
-        res.status(400).send({
+        res.status(500).send({
           message: 'Could not update profile',
           err: err.message,
           stack: err.stack,
@@ -98,7 +98,7 @@ const updateAvatar = (req, res) => {
           stack: err.stack,
         });
       } else {
-        res.status(400).send({
+        res.status(500).send({
           message: 'Could not update avatar',
           err: err.message,
           stack: err.stack,

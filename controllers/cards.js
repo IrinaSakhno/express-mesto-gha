@@ -67,6 +67,14 @@ const likeCard = (req, res) => {
           .send({
             message: 'Card not found',
           });
+      } else if (err.name === 'CastError') {
+        res
+          .status(400)
+          .send({
+            message: 'Card ID is incorrect',
+            err: err.message,
+            stack: err.stack,
+          });
       } else {
         res
           .status(500)
@@ -95,6 +103,14 @@ const dislikeCard = (req, res) => {
           .status(404)
           .send({
             message: 'Card not found',
+          });
+      } else if (err.name === 'CastError') {
+        res
+          .status(400)
+          .send({
+            message: 'Card ID is incorrect',
+            err: err.message,
+            stack: err.stack,
           });
       } else {
         res

@@ -22,14 +22,6 @@ app.use(cookieParser());
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '649afdfba9f2d6bf6e6ea44a',
-  };
-
-  next();
-});
-
 app.use(router);
 
 app.listen(PORT, () => {

@@ -62,6 +62,11 @@ const createUser = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    res.status(403).send({ message: 'Please, enter user data' });
+    return;
+  }
+
   User.findOne({ email })
     .select('+password')
     .orFail(() => new Error({ message: 'User not found' }))

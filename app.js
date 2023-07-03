@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');

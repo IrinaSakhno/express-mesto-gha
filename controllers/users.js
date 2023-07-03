@@ -4,7 +4,6 @@ const User = require('../models/user');
 const {
   UserNotFound,
   IncorrectUserDataError,
-  EmptyUserDataError,
   WrongUserDataError,
   ConflictError,
   UserNotExist,
@@ -70,11 +69,6 @@ const createUser = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    next(new EmptyUserDataError());
-    return;
-  }
-
   User.findOne({ email })
     .select('+password')
     .orFail(() => new UserNotFound())
@@ -84,7 +78,7 @@ const login = (req, res, next) => {
           if (isValidUser) {
             const jwt = jsonWebToken.sign({
               _id: user._id,
-            }, 'SECRET');
+            }, process.env.JWT_SECRET);
             res.cookie('jwt', jwt, {
               maxAge: 360000,
               httpOnly: true,

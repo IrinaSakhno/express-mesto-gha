@@ -7,6 +7,7 @@ const {
   IncorrectUserDataError,
   EmptyUserDataError,
   WrongUserDataError,
+  ConflictError,
 } = require('../middlewares/error');
 
 const getUsers = (req, res, next) => {
@@ -54,6 +55,10 @@ const createUser = (req, res, next) => {
         .catch((err) => {
           if (err.name === 'CastError' || err.name === 'ValidationError') {
             next(new IncorrectUserDataError());
+            return;
+          }
+          if (err.code === 11000) {
+            next(new ConflictError());
             return;
           }
           next(err);

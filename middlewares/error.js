@@ -37,7 +37,21 @@ class EmptyUserDataError extends Error {
 class WrongUserDataError extends Error {
   constructor(message) {
     super(message);
+    this.statusCode = 400;
+  }
+}
+
+class UserNotLoggedIn extends Error {
+  constructor(message) {
+    super(message);
     this.statusCode = 401;
+  }
+}
+
+class ConflictError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 409;
   }
 }
 
@@ -61,8 +75,14 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 403;
     message = 'Please, enter user data';
   } else if (err instanceof WrongUserDataError) {
-    statusCode = 401;
+    statusCode = 400;
     message = 'Wrong user data';
+  } else if (err instanceof UserNotLoggedIn) {
+    statusCode = 401;
+    message = 'You are not logged in';
+  } else if (err instanceof ConflictError) {
+    statusCode = 409;
+    message = 'User with this email already exists';
   }
 
   res.status(statusCode).send({ message });
@@ -77,4 +97,6 @@ module.exports = {
   IncorrectUserDataError,
   EmptyUserDataError,
   WrongUserDataError,
+  UserNotLoggedIn,
+  ConflictError,
 };

@@ -1,6 +1,8 @@
 const Card = require('../models/card');
 const {
-  IncorrectCardDataError, CardNotFound, DeleteRightsError,
+  ValidationError,
+  NotFoundError,
+  ForbiddenError,
 } = require('../middlewares/error');
 
 const getCards = (req, res, next) => {
@@ -17,7 +19,7 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new IncorrectCardDataError());
+        next(new ValidationError('Card data is incorrect'));
         return;
       }
       next(err);
@@ -27,15 +29,15 @@ const createCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail(() => {
-      throw new CardNotFound();
+      throw new NotFoundError('card not found');
     })
     .then((card) => {
       if (`${card.owner}` !== req.user._id) {
-        throw new DeleteRightsError('Удалять можно только свою карточку');
+        throw new ForbiddenError('You can only delete your own cards');
       }
       Card.findByIdAndRemove(req.params.cardId)
         .orFail(() => {
-          throw new CardNotFound();
+          throw new NotFoundError('card not found');
         })
         .then(() => {
           res.send({ message: 'успешно' });
@@ -51,13 +53,13 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => new CardNotFound())
+    .orFail(() => new NotFoundError('card not found'))
     .then(() => {
       res.send({ message: 'I like it!' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new IncorrectCardDataError());
+        next(new ValidationError('Card data is incorrect'));
       }
       console.log(err.message);
       next(err);
@@ -70,13 +72,13 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => new CardNotFound())
+    .orFail(() => new NotFoundError('card not found'))
     .then(() => {
       res.send({ message: 'Like was successfully removed' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new IncorrectCardDataError());
+        next(new ValidationError('Card data is incorrect'));
       }
       next(err);
     });

@@ -1,37 +1,32 @@
 const bcrypt = require('bcryptjs');
 const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/user');
+const {
+  UserNotFound,
+  WrongFormatError,
+  IncorrectUserDataError,
+  EmptyUserDataError,
+  WrongUserDataError,
+} = require('../middlewares/error');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch((err) => res.status(500).send({
-      message: 'Could not get users',
-      err: err.message,
-      stack: err.stack,
-    }));
+    .catch((err) => next(err));
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(() => new Error('Not found'))
+    .orFail(() => {
+      throw new UserNotFound();
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.message === 'Not found') {
-        res.status(404).send({
-          message: 'User not found',
-        });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({
-          message: 'Wrong ID format',
-        });
-      } else {
-        res.status(500).send({
-          message: 'Could not get user',
-          err: err.message,
-          stack: err.stack,
-        });
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        next(new WrongFormatError());
+        return;
       }
+      next(err);
     });
 };
 
@@ -40,7 +35,7 @@ const getCurrentUser = (req, res, next) => {
   User.find({ _id })
     .then((user) => {
       if (!user) {
-        next(new Error('Пользователь не найден'));
+        next(new UserNotFound());
       }
       return res.send(...user);
     })
@@ -53,8 +48,16 @@ const createUser = (req, res, next) => {
       User.create({
         ...req.body, password: hashedPassword,
       })
-        .then((user) => { res.send({ data: user }); })
-        .catch(next);
+        .then((user) => {
+          res.send({ data: user });
+        })
+        .catch((err) => {
+          if (err.name === 'CastError' || err.name === 'ValidationError') {
+            next(new IncorrectUserDataError());
+            return;
+          }
+          next(err);
+        });
     })
     .catch(next);
 };
@@ -63,13 +66,13 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(403).send({ message: 'Please, enter user data' });
+    next(new EmptyUserDataError());
     return;
   }
 
   User.findOne({ email })
     .select('+password')
-    .orFail(() => new Error({ message: 'User not found' }))
+    .orFail(() => new UserNotFound())
     .then((user) => {
       bcrypt.compare(String(password), user.password)
         .then((isValidUser) => {
@@ -84,7 +87,7 @@ const login = (req, res, next) => {
             });
             res.send({ data: user.toJSON() });
           } else {
-            res.status(401).send({ message: 'Wrong user data' });
+            next(new WrongUserDataError());
           }
         })
         .catch(next);
@@ -92,7 +95,7 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -103,23 +106,15 @@ const updateProfile = (req, res) => {
       res.status(200).send(updateData);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: 'Profile data is incorrect',
-          err: err.message,
-          stack: err.stack,
-        });
-      } else {
-        res.status(500).send({
-          message: 'Could not update profile',
-          err: err.message,
-          stack: err.stack,
-        });
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        next(new IncorrectUserDataError());
+        return;
       }
+      next(err);
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -130,19 +125,11 @@ const updateAvatar = (req, res) => {
       res.status(200).send(updateData);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: 'Avatar format is incorrect',
-          err: err.message,
-          stack: err.stack,
-        });
-      } else {
-        res.status(500).send({
-          message: 'Could not update avatar',
-          err: err.message,
-          stack: err.stack,
-        });
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        next(new IncorrectUserDataError());
+        return;
       }
+      next(err);
     });
 };
 

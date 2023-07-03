@@ -9,11 +9,11 @@ router.post(
   '/signup',
   celebrate({
     body: Joi.object().keys({
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
       avatar: Joi.string().regex(/https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i),
+      email: Joi.string().required().email(),
+      password: Joi.required(),
     }),
   }),
   createUser,
@@ -22,11 +22,10 @@ router.post(
   '/signin',
   celebrate({
     body: Joi.object().keys({
-      email: Joi.string().email().required(),
+      email: Joi.string().required().email(),
       password: Joi.string().required(),
     }),
   }),
-
   login,
 );
 

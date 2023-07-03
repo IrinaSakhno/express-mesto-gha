@@ -1,7 +1,7 @@
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');
-const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -25,6 +25,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(router);
+
+app.use(errors());
 
 app.use(errorHandler);
 

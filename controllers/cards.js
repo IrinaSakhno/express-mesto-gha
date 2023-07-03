@@ -57,9 +57,9 @@ const likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'Not found') {
-        next(CardNotFound());
+        next(new CardNotFound());
       } else if (err.name === 'CastError') {
-        next(WrongFormatError());
+        next(new WrongFormatError());
       }
       next(err);
     });
@@ -77,11 +77,9 @@ const dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'Not found') {
-        next(CardNotFound());
+        next(new CardNotFound());
       } else if (err.name === 'CastError') {
-        next(WrongFormatError());
-      } else {
-        next(WrongFormatError());
+        next(new WrongFormatError());
       }
       next(err);
     });

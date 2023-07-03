@@ -27,6 +27,13 @@ class IncorrectUserDataError extends Error {
   }
 }
 
+class IncorrectCardDataError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 400;
+  }
+}
+
 class EmptyUserDataError extends Error {
   constructor(message) {
     super(message);
@@ -52,6 +59,13 @@ class ConflictError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 409;
+  }
+}
+
+class DeleteRightsError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 400;
   }
 }
 
@@ -83,6 +97,12 @@ const errorHandler = (err, req, res, next) => {
   } else if (err instanceof ConflictError) {
     statusCode = 409;
     message = 'User with this email already exists';
+  } else if (err instanceof IncorrectCardDataError) {
+    statusCode = 400;
+    message = 'Card data is incorrect';
+  } else if (err instanceof DeleteRightsError) {
+    statusCode = 400;
+    message = 'You can only delete your own cards';
   }
 
   res.status(statusCode).send({ message });
@@ -99,4 +119,6 @@ module.exports = {
   WrongUserDataError,
   UserNotLoggedIn,
   ConflictError,
+  IncorrectCardDataError,
+  DeleteRightsError,
 };

@@ -76,13 +76,6 @@ class DeleteRightsError extends Error {
   }
 }
 
-class UserDoesntExistError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 401;
-  }
-}
-
 const errorHandler = (err, req, res, next) => {
   console.log(JSON.stringify(err));
   let statusCode = 500;
@@ -118,7 +111,7 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 403;
     message = 'You can only delete your own cards';
   } else if (err instanceof UserNotExist) {
-    statusCode = 403;
+    statusCode = 404;
     message = 'User does not exist';
   }
 
@@ -138,7 +131,6 @@ module.exports = {
   ConflictError,
   IncorrectCardDataError,
   DeleteRightsError,
-  UserDoesntExistError,
   CardNotFound,
   UserNotExist,
 };

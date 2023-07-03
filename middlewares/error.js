@@ -65,7 +65,7 @@ class ConflictError extends Error {
 class DeleteRightsError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 400;
+    this.statusCode = 403;
   }
 }
 
@@ -101,7 +101,7 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 400;
     message = 'Card data is incorrect';
   } else if (err instanceof DeleteRightsError) {
-    statusCode = 400;
+    statusCode = 403;
     message = 'You can only delete your own cards';
   }
 

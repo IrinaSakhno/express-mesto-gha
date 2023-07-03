@@ -8,6 +8,7 @@ const {
   EmptyUserDataError,
   WrongUserDataError,
   ConflictError,
+  UserNotExist,
 } = require('../middlewares/error');
 
 const getUsers = (req, res, next) => {
@@ -19,7 +20,7 @@ const getUsers = (req, res, next) => {
 const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => {
-      throw new UserNotFound();
+      throw new UserNotExist();
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {

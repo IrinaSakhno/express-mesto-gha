@@ -6,6 +6,13 @@ class UserNotFound extends Error {
   }
 }
 
+class UserNotExist extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
+  }
+}
+
 class CardNotFound extends Error {
   constructor(message) {
     super(message);
@@ -110,6 +117,9 @@ const errorHandler = (err, req, res, next) => {
   } else if (err instanceof DeleteRightsError) {
     statusCode = 403;
     message = 'You can only delete your own cards';
+  } else if (err instanceof UserNotExist) {
+    statusCode = 403;
+    message = 'User does not exist';
   }
 
   res.status(statusCode).send({ message });
@@ -130,4 +140,5 @@ module.exports = {
   DeleteRightsError,
   UserDoesntExistError,
   CardNotFound,
+  UserNotExist,
 };

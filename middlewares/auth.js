@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { UserNotLoggedIn } = require('./error');
+const { UnauthorizedError } = require('./error');
 
 const auth = (req, res, next) => {
   const token = req.cookies.jwt;
@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
-    next(new UserNotLoggedIn());
+    next(new UnauthorizedError('You are not logged in'));
     return;
   }
 

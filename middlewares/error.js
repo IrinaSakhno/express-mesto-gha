@@ -37,7 +37,7 @@ const errorHandler = (err, req, res, next) => {
   let { message } = err;
 
   if (statusCode === 500) {
-    message = 'Ошибка на сервере';
+    message = 'Internal server error has occured';
   }
 
   res.status(statusCode).send({ message });

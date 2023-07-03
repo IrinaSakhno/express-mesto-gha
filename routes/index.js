@@ -4,6 +4,8 @@ const userRoutes = require('./users');
 const cardRoutes = require('./cards');
 const { createUser, login } = require('../controllers/users');
 const auth = require('../middlewares/auth');
+const regexUrl = require('../utils/regexUrl');
+const { PageNotExist } = require('../middlewares/error');
 
 router.post(
   '/signup',
@@ -11,9 +13,9 @@ router.post(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().regex(/https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i),
+      avatar: Joi.string().regex(regexUrl),
       email: Joi.string().required().email(),
-      password: Joi.required(),
+      password: Joi.string().required(),
     }),
   }),
   createUser,
@@ -23,7 +25,7 @@ router.post(
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
-      password: Joi.required(),
+      password: Joi.string().required(),
     }),
   }),
   login,
@@ -34,10 +36,8 @@ router.use(auth);
 router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
 
-router.use('/', (req, res) => {
-  res.status(404).send({
-    message: 'This page does not exist',
-  });
+router.use('/', (req, res, next) => {
+  next(new PageNotExist());
 });
 
 module.exports = router;

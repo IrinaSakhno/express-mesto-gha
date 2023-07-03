@@ -20,13 +20,6 @@ class CardNotFound extends Error {
   }
 }
 
-class WrongFormatError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 400;
-  }
-}
-
 class IncorrectUserDataError extends Error {
   constructor(message) {
     super(message);
@@ -38,13 +31,6 @@ class IncorrectCardDataError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 400;
-  }
-}
-
-class EmptyUserDataError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 403;
   }
 }
 
@@ -63,8 +49,8 @@ class UserNotLoggedIn extends Error {
 }
 
 class ConflictError extends Error {
-  constructor(message) {
-    super(message);
+  constructor() {
+    super();
     this.statusCode = 409;
   }
 }
@@ -73,6 +59,13 @@ class DeleteRightsError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 403;
+  }
+}
+
+class PageNotExist extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
   }
 }
 
@@ -86,15 +79,9 @@ const errorHandler = (err, req, res, next) => {
   } else if (err instanceof CardNotFound) {
     statusCode = 404;
     message = 'card not found';
-  } else if (err instanceof WrongFormatError) {
-    statusCode = 400;
-    message = 'Wrong ID format';
   } else if (err instanceof IncorrectUserDataError) {
     statusCode = 400;
     message = 'User data is incorrect';
-  } else if (err instanceof EmptyUserDataError) {
-    statusCode = 403;
-    message = 'Please, enter user data';
   } else if (err instanceof WrongUserDataError) {
     statusCode = 400;
     message = 'Wrong user data';
@@ -113,6 +100,9 @@ const errorHandler = (err, req, res, next) => {
   } else if (err instanceof UserNotExist) {
     statusCode = 404;
     message = 'User does not exist';
+  } else if (err instanceof PageNotExist) {
+    statusCode = 404;
+    message = 'This page does not exist';
   }
 
   res.status(statusCode).send({ message });
@@ -123,9 +113,7 @@ const errorHandler = (err, req, res, next) => {
 module.exports = {
   errorHandler,
   UserNotFound,
-  WrongFormatError,
   IncorrectUserDataError,
-  EmptyUserDataError,
   WrongUserDataError,
   UserNotLoggedIn,
   ConflictError,
@@ -133,4 +121,5 @@ module.exports = {
   DeleteRightsError,
   CardNotFound,
   UserNotExist,
+  PageNotExist,
 };

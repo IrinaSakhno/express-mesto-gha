@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const {
-  IncorrectCardDataError, CardNotFound, DeleteRightsError, WrongFormatError,
+  IncorrectCardDataError, CardNotFound, DeleteRightsError,
 } = require('../middlewares/error');
 
 const getCards = (req, res, next) => {
@@ -16,7 +16,7 @@ const createCard = (req, res, next) => {
   })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new IncorrectCardDataError());
         return;
       }
@@ -56,10 +56,8 @@ const likeCard = (req, res, next) => {
       res.send({ message: 'I like it!' });
     })
     .catch((err) => {
-      if (err.message === 'Not found') {
-        next(new CardNotFound());
-      } else if (err.name === 'CastError') {
-        next(new WrongFormatError());
+      if (err.name === 'CastError') {
+        next(new IncorrectCardDataError());
       }
       console.log(err.message);
       next(err);
@@ -77,10 +75,8 @@ const dislikeCard = (req, res, next) => {
       res.send({ message: 'Like was successfully removed' });
     })
     .catch((err) => {
-      if (err.message === 'Not found') {
-        next(new CardNotFound());
-      } else if (err.name === 'CastError') {
-        next(new WrongFormatError());
+      if (err.name === 'CastError') {
+        next(new IncorrectCardDataError());
       }
       next(err);
     });

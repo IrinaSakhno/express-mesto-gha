@@ -3,7 +3,6 @@ const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   UserNotFound,
-  WrongFormatError,
   IncorrectUserDataError,
   EmptyUserDataError,
   WrongUserDataError,
@@ -24,8 +23,8 @@ const getUserById = (req, res, next) => {
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new WrongFormatError());
+      if (err.name === 'CastError') {
+        next(new IncorrectUserDataError());
         return;
       }
       next(err);
@@ -54,7 +53,7 @@ const createUser = (req, res, next) => {
           res.send({ data: user });
         })
         .catch((err) => {
-          if (err.name === 'CastError' || err.name === 'ValidationError') {
+          if (err.name === 'ValidationError') {
             next(new IncorrectUserDataError());
             return;
           }
@@ -112,7 +111,7 @@ const updateProfile = (req, res, next) => {
       res.status(200).send(updateData);
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new IncorrectUserDataError());
         return;
       }
@@ -131,7 +130,7 @@ const updateAvatar = (req, res, next) => {
       res.status(200).send(updateData);
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new IncorrectUserDataError());
         return;
       }

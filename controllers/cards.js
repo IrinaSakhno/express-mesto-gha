@@ -61,6 +61,7 @@ const likeCard = (req, res, next) => {
       } else if (err.name === 'CastError') {
         next(new WrongFormatError());
       }
+      console.log(err.message);
       next(err);
     });
 };

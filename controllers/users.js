@@ -6,7 +6,6 @@ const {
   NotFoundError,
   UnauthorizedError,
   ValidationError,
-  UserNotFound,
 } = require('../middlewares/error');
 
 const getUsers = (req, res, next) => {
@@ -71,7 +70,7 @@ const login = (req, res, next) => {
 
   User.findOne({ email })
     .select('+password')
-    .orFail(() => new UserNotFound('User not found'))
+    .orFail(() => new UnauthorizedError('User not found'))
     .then((user) => {
       bcrypt.compare(String(password), user.password)
         .then((isValidUser) => {

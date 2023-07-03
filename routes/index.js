@@ -5,7 +5,7 @@ const cardRoutes = require('./cards');
 const { createUser, login } = require('../controllers/users');
 const auth = require('../middlewares/auth');
 const regexUrl = require('../utils/regexUrl');
-const { PageNotExist } = require('../middlewares/error');
+const { NotFoundError } = require('../middlewares/error');
 
 router.post(
   '/signup',
@@ -37,7 +37,7 @@ router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
 
 router.use('/', (req, res, next) => {
-  next(new PageNotExist());
+  next(new NotFoundError('This page does not exist'));
 });
 
 module.exports = router;

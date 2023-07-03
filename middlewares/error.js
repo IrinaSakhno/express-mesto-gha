@@ -2,7 +2,7 @@
 class UserNotFound extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 401;
+    this.statusCode = 404;
   }
 }
 
@@ -81,7 +81,7 @@ const errorHandler = (err, req, res, next) => {
   let statusCode = 500;
   let message = 'Internal server error has occured';
   if (err instanceof UserNotFound) {
-    statusCode = 401;
+    statusCode = 404;
     message = 'User not found';
   } else if (err instanceof CardNotFound) {
     statusCode = 404;

@@ -34,7 +34,7 @@ const getCurrentUser = (req, res, next) => {
   User.find({ _id })
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('User not found');
+        throw new NotFoundError('User not found');
       }
       return res.send(...user);
     })
